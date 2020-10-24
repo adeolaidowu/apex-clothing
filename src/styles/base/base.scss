@@ -10,6 +10,11 @@ body {
     padding: 2rem 6rem;
     ///background: $dark-blue;
   }
+
+  a {
+    text-decoration: none;
+    color: black;
+  }
   
   button {
     cursor: pointer;
