@@ -23,3 +23,7 @@ body {
   button:disabled {
     cursor: default;
   }
+
+  * {
+    box-sizing: border-box;
+  }
