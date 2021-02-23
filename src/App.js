@@ -1,33 +1,58 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Switch, Route } from "react-router-dom";
 import './App.css';
 import Header from './components/Header';
 import HomePage from './components/HomePage';
 import ShopPage from './components/ShopPage';
 import SignInAndSignUpPage from './components/SignInAndSignUpPage';
-import { auth } from './firebase/firebase';
+import { auth,createUserProfileDocument } from './firebase/firebase';
 
-function App() {
-  const [currentUser, setCurrentUser ] = useState(null);
+class App extends React.Component {
+  state = {
+    currentUser: null
+  }
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      setCurrentUser(user);
-      console.log(user)
-    });
-    
-    return unsubscribe;
-  });
-  return (
-    <div>
-    <Header currentUser={currentUser} />
-    <Switch>
-      <Route path='/' component={HomePage} exact />
-      <Route path='/shop' component={ShopPage} />
-      <Route path='/signin' component={SignInAndSignUpPage} />
-    </Switch>
-    </div>
-  );
+  unsubscribeFromAuth = null;
+
+  componentDidMount(){
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+      if(userAuth){
+        const userRef = await createUserProfileDocument(userAuth);
+
+        userRef.onSnapshot(snapShot => {
+          this.setState(() => ({
+            currentUser: {
+              id: snapShot.id,
+              ...snapShot.data()
+            }
+          }));
+          console.log(this.state);
+        })
+      }
+      this.setState(() => ({ currentUser: userAuth}))
+    })
+  }
+
+  componentWillUnmount(){
+    this.unsubscribeFromAuth();
+  }
+
+  render(){
+    const { currentUser } = this.state;
+    return (
+      <div>
+      <Header currentUser={currentUser} />
+      <Switch>
+        <Route path='/' component={HomePage} exact />
+        <Route path='/shop' component={ShopPage} />
+        <Route path='/signin' component={SignInAndSignUpPage} />
+      </Switch>
+      </div>
+    );
+  }
+
+  
+  
 }
 
 export default App;
