@@ -1,4 +1,5 @@
-const SHOPDATA = [{
+const SHOP_DATA = [
+  {
     id: 1,
     title: 'Hats',
     routeName: 'hats',
@@ -242,6 +243,7 @@ const SHOPDATA = [{
         price: 25
       }
     ]
-  }];
+  }
+];
 
-  export default SHOPDATA;
+export default SHOP_DATA;

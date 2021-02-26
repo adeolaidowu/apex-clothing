@@ -25,7 +25,7 @@ function Header({currentUser, hidden}) {
                     <Link className="option" to="/signin">SIGN IN</Link>
                 }
                 <CartIcon />
-                {hidden && <CartDropdown />}
+                {!hidden && <CartDropdown />}
             </div>
         </div>
     )
