@@ -4,13 +4,13 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from './selectors/user';
 import { setCurrentUser } from './redux/actions/user';
-import './App.css';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import ShopPage from './components/ShopPage';
 import CheckoutPage from './pages/Checkout';
 import SignInAndSignUpPage from './components/SignInAndSignUpPage';
-import { auth,createUserProfileDocument } from './firebase/firebase';
+import { auth, createUserProfileDocument } from './firebase/firebase';
+import './App.css';
 
 class App extends React.Component {
   unsubscribeFromAuth = null;
@@ -32,7 +32,7 @@ class App extends React.Component {
           )
         })
       }
-      setCurrentUser(userAuth)
+      setCurrentUser(userAuth);
     })
   }
 
