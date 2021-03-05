@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Switch, Route, Redirect } from "react-router-dom";
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect';
@@ -12,35 +12,29 @@ import SignInAndSignUpPage from './components/SignInAndSignUpPage';
 import { auth, createUserProfileDocument } from './firebase/firebase';
 import './App.css';
 
-class App extends React.Component {
-  unsubscribeFromAuth = null;
-
-  componentDidMount(){
-    const { setCurrentUser } = this.props;
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-      if(userAuth){
+const App = ({ setCurrentUser, currentUser }) => {
+  useEffect(() => {
+    auth.onAuthStateChanged(async (userAuth) => {
+      if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
 
-        userRef.onSnapshot(snapShot => {
-          setCurrentUser(
-            {
-              currentUser: {
-                id: snapShot.id,
-                ...snapShot.data()
-              }
-            }
-          )
-        })
+        userRef.onSnapshot((snapShot) => {
+          setCurrentUser({
+            currentUser: {
+              id: snapShot.id,
+              ...snapShot.data(),
+            },
+          });
+        });
       }
       setCurrentUser(userAuth);
-    })
-  }
+    });
+  }, [setCurrentUser]);
 
-  componentWillUnmount(){
-    this.unsubscribeFromAuth();
-  }
+  // componentWillUnmount(){
+  //   this.unsubscribeFromAuth();
+  // }
 
-  render(){
     return (
       <div>
       <Header />
@@ -48,11 +42,10 @@ class App extends React.Component {
         <Route path='/' component={HomePage} exact />
         <Route path='/shop' component={ShopPage} />
         <Route path='/checkout' component={CheckoutPage} />
-        <Route exact path='/signin' render={() => this.props.currentUser ? <Redirect to='/' /> : <SignInAndSignUpPage />} />
+        <Route exact path='/signin' render={() => currentUser ? <Redirect to='/' /> : <SignInAndSignUpPage />} />
       </Switch>
       </div>
     );
-  }
 
   
   
